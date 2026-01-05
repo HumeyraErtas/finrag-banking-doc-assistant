@@ -97,6 +97,23 @@ Lisans
 İletişim
 - Sorular/yardım için issue açabilirsiniz.
 
+Docker
+
+- Kısa: proje için basit bir Docker image oluşturup lokal veya CI ortamında çalıştırabilirsiniz.
+- Örnek `Dockerfile` ile build ve run (projenin kök dizininde çalıştırın):
+
+```bash
+# image oluştur
+docker build -t finrag-banking-doc-assistant:latest .
+
+# .env dosyasını kullanarak container çalıştırma (gizli anahtarlar host'ta kalır)
+docker run --env-file .env -p 8000:8000 finrag-banking-doc-assistant:latest
+```
+
+- Notlar:
+	- `.env` dosyanızdaki `OPENAI_API_KEY` veya `DB_KEY` gibi gizli değerleri image içine gömmeyin. `--env-file` veya CI/CD secret mekanizmalarını kullanın.
+	- Prod için Docker Compose veya Kubernetes ile gizli yönetimini entegre edin (Secret/KeyVault gibi).
+
 ## Güvenlik ve Gizli Anahtarlar
 
 - **ÖNEMLİ:** `OPENAI_API_KEY`, `DB_KEY` gibi özel anahtarlar bilerek repo'da boş veya placeholder olarak bırakılmıştır. Güvenlik nedeniyle bu anahtarlar her geliştirici / kullanıcı için ayrı ayrı ayarlanmalıdır.

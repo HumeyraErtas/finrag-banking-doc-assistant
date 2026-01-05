@@ -1,2 +1,31 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual env
+.venv/
+venv/
+
+# Env
+.env
+
+# Data / indexes
+data/
+*.sqlite
+*.db
+*.index
+
+# Logs
+*.log
+
+# OS/IDE
+.DS_Store
+.vscode/
+.idea/

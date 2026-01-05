@@ -13,6 +13,8 @@ from app.faiss_index import FaissStore
 from app.retriever import Retriever
 from app.llm import build_llm
 from app.rag import RAG
+from functools import lru_cache
+
 
 app = FastAPI(title="FinRAG Banking Doc Assistant", version="1.0.0")
 
@@ -83,3 +85,19 @@ def ask(req: AskRequest, db: Session = Depends(get_session)):
             for c in res.citations
         ],
     )
+
+@lru_cache(maxsize=1)
+def _cached_components():
+    if not os.path.exists(settings.faiss_index_path):
+        raise RuntimeError(
+            f"FAISS index not found at {settings.faiss_index_path}. Run: python scripts/ingest_cli.py"
+        )
+    embedder = Embedder()
+    store = FaissStore.load(settings.faiss_index_path)
+    llm = build_llm()
+    return embedder, store, llm
+
+def build_rag(db: Session) -> RAG:
+    embedder, store, llm = _cached_components()
+    retriever = Retriever(db=db, embedder=embedder, store=store)
+    return RAG(retriever=retriever, llm=llm)
